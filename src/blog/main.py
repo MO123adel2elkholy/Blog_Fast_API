@@ -1,8 +1,12 @@
+
+from .database import engine
+from . import models
 from fastapi import FastAPI
-from typing import Optional
-from pydantic import BaseModel
-import uvicorn
-from . import schema
+
+
+from . import schema, database, models
+
+models.Base.metadata.create_all(engine)
 
 app = FastAPI()
 
