@@ -10,3 +10,11 @@ engine = create_engine(sqlalchemy_uri, connect_args={
 sessionlocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
 Base = declarative_base()
+
+
+def get_db():
+    db = sessionlocal()
+    try:
+        yield db
+    finally:
+        db.close()

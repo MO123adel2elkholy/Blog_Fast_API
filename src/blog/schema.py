@@ -34,7 +34,7 @@ from typing import Optional, List
 from pydantic import BaseModel, EmailStr
 
 
-class Blog(BaseModel):
+class BlogSChema(BaseModel):
     title: str
     body: str
     published: Optional[bool]
@@ -44,7 +44,7 @@ class Blog(BaseModel):
         orm_mode = True            # ← enable ORM mode
 
 
-class User(BaseModel):
+class UserSchema(BaseModel):
     name: str
     email: EmailStr
     password: str
@@ -53,13 +53,13 @@ class User(BaseModel):
 class ReadUser(BaseModel):
     name: str
     email: EmailStr
-    blogs: List[Blog]
+    blogs: List[BlogSChema]
 
     class Config:
         orm_mode = True            # ← enable ORM mode
 
 
-class ReadBlog(BaseModel):
+class ReadBlogSChema(BaseModel):
     title: str
     body: str
     creator: Optional[ReadUser]   # allow None if there is no creator
