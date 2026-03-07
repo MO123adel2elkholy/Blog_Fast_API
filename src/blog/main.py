@@ -29,7 +29,8 @@ app = FastAPI()
 # crete new blog
 @app.post('/blog', status_code=status.HTTP_201_CREATED, tags=['blogs'])
 def create(request: schema.Blog, db: Session = Depends(get_db)):
-    new_blog = models.Blog(title=request.title, body=request.body)
+    new_blog = models.Blog(title=request.title,
+                           body=request.body, user_id=request.user_id)
     db.add(new_blog)
     db.commit()
     db.refresh(new_blog)
