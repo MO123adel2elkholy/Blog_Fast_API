@@ -9,63 +9,43 @@ from fastapi.exceptions import HTTPException
 from typing import List
 from blog.hashing import Hash
 from fastapi import APIRouter
+from blog.repository import blogs
 
 
-router = APIRouter()
+router = APIRouter(
+    tags=['blogs'],
+    prefix="/blog",
+
+)
 
 blogschema = Blog
 
 
-@router.post('/blog', status_code=status.HTTP_201_CREATED, tags=['blogs'])
+@router.post('/', status_code=status.HTTP_201_CREATED)
 def create(request: BlogSChema, db: Session = Depends(get_db)):
-    new_blog = Blog(title=request.title,
-                    body=request.body, user_id=request.user_id)
-    db.add(new_blog)
-    db.commit()
-    db.refresh(new_blog)
-    return new_blog
+
+    return blogs.create_blog(request, db)
 
 
 # return all blogs
-@router.get('/blogs', status_code=status.HTTP_200_OK, response_model=List[ReadBlogSChema], tags=['blogs'])
+@router.get('/', status_code=status.HTTP_200_OK, response_model=List[ReadBlogSChema])
 def all(db: Session = Depends(get_db)):
-    return db.query(Blog).all()
+    return blogs.get_all_blogs(db)
 
 
 # return blog with id
-@router.get('/{id}', status_code=status.HTTP_200_OK, response_model=ReadBlogSChema, tags=['blogs'])
+@router.get('/{id}', status_code=status.HTTP_200_OK, response_model=ReadBlogSChema)
 def get_blog(id: int, response: Response, db: Session = Depends(get_db)):
-    blog = db.query(Blog).filter(Blog.id == id).first()
-    if not blog:
-        raise HTTPException(
-            detail=f"no blog with this id {id} ", status_code=status.HTTP_404_NOT_FOUND)
-
-    return blog
+    return blogs.get_blog_id(id, response, db)
 
 
 # detlete bog with id
-@router.delete('/blog/{id}', status_code=status.HTTP_204_NO_CONTENT, tags=['blogs'])
+@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
 def delete_blog(id: int, response: Response, db: Session = Depends(get_db)):
-    db.query(Blog).filter(Blog.id ==
-                          id).delete(synchronize_session=False)
-    blog = db.commit()
-    if not blog:
-        raise HTTPException(
-            detail=f"no blog with this id {id} ", status_code=status.HTTP_404_NOT_FOUND)
-
-    return {"message": "succss"}
+    return blogs.delete_blog_id(id, response, db)
 
 
 # update bog with id
-@router.put('/blog/{id}', status_code=status.HTTP_202_ACCEPTED, tags=['blogs'])
-def update_blog(id: int, request: ReadBlogSChema, response: Response, db: Session = Depends(get_db)):
-    blog = db.query(Blog).filter(Blog.id == id).first()
-    if not blog:
-        raise HTTPException(
-            detail=f"no blog with this id {id} ", status_code=status.HTTP_404_NOT_FOUND)
-    else:
-        db.query(Blog).filter(Blog.id == id).update(
-            {'title': request.title, 'body': request.body}, synchronize_session=False)
-        db.commit()
-
-        return request
+@router.put('/{id}', status_code=status.HTTP_202_ACCEPTED, )
+def update_blog(id: int, request: BlogSChema, response: Response, db: Session = Depends(get_db)):
+    return blogs.update_blog_id(id, request, response, db)

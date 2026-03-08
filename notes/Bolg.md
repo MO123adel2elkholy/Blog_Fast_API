@@ -4,4 +4,7 @@
 ```
 
 # Fast API Dependancy injection 
-* fast api denpendce on dependancy injection Design pattern 
+* fast api denpendce on dependancy injection Design pattern
+
+# Fast api dependence on Model View Controll (MVC) Design Pattern 
+* this enapls us to seprate logic from businss and make code easy to extend and maintain 
