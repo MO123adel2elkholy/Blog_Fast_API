@@ -16,8 +16,8 @@ user_router = APIRouter(
 # crete new User
 
 
-@user_router.post('/', status_code=status.HTTP_201_CREATED, response_model=ReadUser)
-def create_user(request: UserSchema, db: Session = Depends(get_db)):
+@user_router.post('/', status_code=status.HTTP_201_CREATED,)
+def create_user(request: UserSchema, db: Session = Depends(get_db)) -> dict:
     return users.create_user_new(request, db)
 
 

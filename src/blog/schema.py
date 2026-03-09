@@ -34,6 +34,7 @@ from typing import Optional, List
 from pydantic import BaseModel, EmailStr
 
 
+#  Blog and User Schema
 class BlogSChema(BaseModel):
     title: str
     body: str
@@ -66,3 +67,18 @@ class ReadBlogSChema(BaseModel):
 
     class Config:
         orm_mode = True            # ← was `from_attributes` before, which is wrong
+
+
+#  Authentication Schema
+class UserLginSchema(BaseModel):
+    name: str
+    password: str
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    name: Optional[str] = None

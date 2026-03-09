@@ -1,7 +1,7 @@
 from blog.database import engine, sessionlocal, get_db
 from blog.models import Blog, User
 from fastapi import FastAPI, Depends
-from blog.schema import BlogSChema, ReadBlogSChema
+from blog.schema import BlogSChema, ReadBlogSChema, UserSchema
 from sqlalchemy.orm import Session
 from fastapi import status
 from fastapi.responses import Response
@@ -10,6 +10,7 @@ from typing import List
 from blog.hashing import Hash
 from fastapi import APIRouter
 from blog.repository import blogs
+from blog.oauth2 import get_current_user
 
 
 router = APIRouter(
@@ -18,34 +19,32 @@ router = APIRouter(
 
 )
 
-blogschema = Blog
-
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def create(request: BlogSChema, db: Session = Depends(get_db)):
+def create(request: BlogSChema, db: Session = Depends(get_db), get_current_user_auth: UserSchema = Depends(get_current_user)):
 
     return blogs.create_blog(request, db)
 
 
 # return all blogs
 @router.get('/', status_code=status.HTTP_200_OK, response_model=List[ReadBlogSChema])
-def all(db: Session = Depends(get_db)):
+def all(db: Session = Depends(get_db), get_current_user_auth: UserSchema = Depends(get_current_user)):
     return blogs.get_all_blogs(db)
 
 
 # return blog with id
 @router.get('/{id}', status_code=status.HTTP_200_OK, response_model=ReadBlogSChema)
-def get_blog(id: int, response: Response, db: Session = Depends(get_db)):
+def get_blog(id: int, response: Response, db: Session = Depends(get_db), get_current_user_auth: UserSchema = Depends(get_current_user)):
     return blogs.get_blog_id(id, response, db)
 
 
 # detlete bog with id
 @router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
-def delete_blog(id: int, response: Response, db: Session = Depends(get_db)):
+def delete_blog(id: int, response: Response, db: Session = Depends(get_db), get_current_user_auth: UserSchema = Depends(get_current_user)):
     return blogs.delete_blog_id(id, response, db)
 
 
 # update bog with id
 @router.put('/{id}', status_code=status.HTTP_202_ACCEPTED, )
-def update_blog(id: int, request: BlogSChema, response: Response, db: Session = Depends(get_db)):
+def update_blog(id: int, request: BlogSChema, response: Response, db: Session = Depends(get_db), get_current_user_auth: UserSchema = Depends(get_current_user)):
     return blogs.update_blog_id(id, request, response, db)

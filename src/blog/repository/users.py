@@ -24,7 +24,7 @@ def create_user_new(request: UserSchema, db: Session):
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
-        return request
+        return {"message": "Acount created Successfuly now you can login "}
 
 
 def get_user_exist(id: int, response: Response, db: Session):
