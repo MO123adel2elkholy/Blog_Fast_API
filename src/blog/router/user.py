@@ -6,12 +6,18 @@ from fastapi import status
 from fastapi.responses import Response
 from fastapi import APIRouter
 from blog.repository import users
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+
+limiterr = Limiter(key_func=get_remote_address)
 
 user_router = APIRouter(
     tags=['user'],
     prefix="/user",
 
 )
+
 
 # crete new User
 

@@ -1,8 +1,22 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from fastapi.responses import HTMLResponse
 from starlette.responses import FileResponse
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from fastapi.requests import Request
+from fastapi.responses import PlainTextResponse
 
 app = FastAPI()
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+# insted of using you can use alimite peroid for all applayed on all ennpoint _rate_limit_exceeded_handler
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
+@app.get("/limited")
+@limiter.limit("1/minute")
+async def homepage(request: Request):
+    return PlainTextResponse("test")
 
 
 class ConnectionManager:
