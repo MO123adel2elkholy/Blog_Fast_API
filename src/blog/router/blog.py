@@ -11,6 +11,9 @@ from blog.hashing import Hash
 from fastapi import APIRouter
 from blog.repository import blogs
 from blog.oauth2 import get_current_user
+from blog.limiter import limiter
+from blog.limiter import limiter
+from fastapi.requests import Request
 
 
 router = APIRouter(
@@ -21,9 +24,9 @@ router = APIRouter(
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def create(request: BlogSChema, db: Session = Depends(get_db), get_current_user_auth: UserSchema = Depends(get_current_user)):
-
-    return blogs.create_blog(request, db)
+@limiter.limit("1/minute")
+def create(request: Request, blog: BlogSChema, db: Session = Depends(get_db), get_current_user_auth: UserSchema = Depends(get_current_user)):
+    return blogs.create_blog(blog, db)
 
 
 # return all blogs

@@ -6,6 +6,7 @@ from slowapi.errors import RateLimitExceeded
 from fastapi.requests import Request
 from fastapi.responses import PlainTextResponse
 
+
 app = FastAPI()
 redis_path = 'redis://localhost:6379'
 limiter = Limiter(key_func=get_remote_address, storage_uri=redis_path)
@@ -14,10 +15,20 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
+# limited using Slowapi (rate-limiting package )
+
 @app.get("/limited")
 @limiter.limit("1/minute")
 async def homepage(request: Request):
     return PlainTextResponse("test")
+
+
+@app.get("/limited2")
+@limiter.limit("1/minute")
+async def homepage2(request: Request):
+    return PlainTextResponse("test")
+
+# limited using Fastapi-guard  (rate-limiting package )
 
 
 class ConnectionManager:
