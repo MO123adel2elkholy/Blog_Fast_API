@@ -8,3 +8,6 @@
 
 # Fast api dependence on Model View Controll (MVC) Design Pattern 
 * this enapls us to seprate logic from businss and make code easy to extend and maintain 
+
+# Fastapi websocket (Realtime Cummnication  )
+* fastapi allowing realtime connection throug WebSocket  
