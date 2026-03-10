@@ -7,7 +7,8 @@ from fastapi.requests import Request
 from fastapi.responses import PlainTextResponse
 
 app = FastAPI()
-limiter = Limiter(key_func=get_remote_address)
+redis_path = 'redis://localhost:6379'
+limiter = Limiter(key_func=get_remote_address, storage_uri=redis_path)
 app.state.limiter = limiter
 # insted of using you can use alimite peroid for all applayed on all ennpoint _rate_limit_exceeded_handler
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
