@@ -1,0 +1,15 @@
+{
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "charliermarsh.ruff",
+     "editor.codeActionsOnSave": {
+        // For Formatting  pip8
+        "source.fixAll": "explicit",
+        // For Linting Like Black 
+        "source.organizeImports": "explicit"
+  },
+  "editor.rulers": [88],
+  
+  },
+ 
+}
