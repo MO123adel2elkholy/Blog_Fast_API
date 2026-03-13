@@ -11,15 +11,9 @@ models.Base.metadata.create_all(engine)
 
 # …other imports…
 
-app = FastAPI()
+app = FastAPI(tilte='Blog Fsat Api')
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-
-
-# limited using Slowapi (rate-limiting package )
-
-# @app.get("/limited")
-# @limiter.limit("1/minute")
 
 
 app.include_router(blog.router)

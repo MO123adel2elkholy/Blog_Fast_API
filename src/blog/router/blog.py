@@ -1,4 +1,4 @@
-from blog.database import engine, sessionlocal, get_db
+from blog.database import engine, get_db
 from blog.models import Blog, User
 from fastapi import FastAPI, Depends
 from blog.schema import BlogSChema, ReadBlogSChema, UserSchema
