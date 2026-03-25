@@ -18,3 +18,13 @@
 2- using async and await 
 3- using Async seesion 
 4- for crud ops uing select function querying and sclaer for get and delete for daeleting datapase object this all dependce on project needs 
+
+# integrating celery 
+* celery is used for heavy task that takes toolong time to process such as sending Email image processing database pooling 
+1- this good for scalabilty 
+2- user experience 
+3- ``` celery -A celery_worker.celery_app worker --pool=solo --loglevel=info ```
+
+# interating flower 
+* flower is monitoring tool for celery tasks with good ui for developers montoring tasks 
+1- ```  celery -A celery_worker.celery_app flower --port=5555```

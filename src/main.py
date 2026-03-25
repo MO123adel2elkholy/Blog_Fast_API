@@ -5,7 +5,7 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from fastapi.requests import Request
 from fastapi.responses import PlainTextResponse
-
+from celery_worker import celery_task
 
 app = FastAPI()
 redis_path = 'redis://localhost:6379'
@@ -27,6 +27,13 @@ async def homepage(request: Request):
 @limiter.limit("1/minute")
 async def homepage2(request: Request):
     return PlainTextResponse("test")
+
+
+@app.get("/celery_task")
+async def celery_task1(request: Request):
+    task = celery_task.delay(1, 3, 4)
+    return PlainTextResponse(f"celery_task result  =>  {task}")
+
 
 # limited using Fastapi-guard  (rate-limiting package )
 
