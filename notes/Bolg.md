@@ -37,3 +37,5 @@
 2- init alembic ``` alembic init alembic```
 3- making migrations ```  alembic -c blog/alembic.ini revision --autogenerate -m "Databse created  "```
 4- applay migrations ``` alembic -c blog/alembic.ini upgrade head``` 
+5 upgrade head if somthing wrong get had happend ``` alembic -c blog/alembic.ini stamp head ```
+
