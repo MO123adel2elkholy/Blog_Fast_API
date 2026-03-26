@@ -21,7 +21,7 @@ user_router = APIRouter(
 
 
 @user_router.post('/', status_code=status.HTTP_201_CREATED,)
-@limiter.limit("1/minute")
+# @limiter.limit("1/minute")
 def create_user(request: Request,  user: UserSchema, db: Session = Depends(get_db)) -> dict:
     return users.create_user_new(user, db)
 

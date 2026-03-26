@@ -28,3 +28,12 @@
 # interating flower 
 * flower is monitoring tool for celery tasks with good ui for developers montoring tasks 
 1- ```  celery -A celery_worker.celery_app flower --port=5555```
+
+
+
+# iintegrating alemic 
+* alemebic is database migration tool for fastapi apps and flask ,
+1- save diffrent versioon for your database changes this is good for contrllling your database 
+2- init alembic ``` alembic init alembic```
+3- making migrations ```  alembic -c blog/alembic.ini revision --autogenerate -m "Databse created  "```
+4- applay migrations ``` alembic -c blog/alembic.ini upgrade head``` 

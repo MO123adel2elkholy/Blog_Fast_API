@@ -1,7 +1,11 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy.orm import scoped_session
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 
 sqlalchemy_uri_sync = 'sqlite:///.blog.db'
 
@@ -10,7 +14,8 @@ engine = create_engine(sqlalchemy_uri_sync, connect_args={
     'check_same_thread': False})
 
 
-sessionlocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+sessionlocal = scoped_session(sessionmaker(
+    bind=engine, autocommit=False, autoflush=False))
 
 
 Base = declarative_base()
