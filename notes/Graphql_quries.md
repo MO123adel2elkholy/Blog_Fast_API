@@ -10,3 +10,17 @@
   ```
 * creating New Blog 
 
+
+* Creating blog 
+``` mutation {
+  updateBlog(
+    id: 1
+    title: "New Title1"
+    published :true
+  ) {
+    id
+    title
+    body
+    published
+  }
+}```
