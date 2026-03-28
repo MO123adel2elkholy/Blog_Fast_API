@@ -7,17 +7,26 @@ from .router import blog, user, authentication
 from .limiter import limiter, RateLimitExceeded, _rate_limit_exceeded_handler
 from ariadne.asgi import GraphQL
 
+from blog.database import sessionlocal
 
+# إنشاء الجداول لو مش موجودة
 models.Base.metadata.create_all(engine)
 
+app = FastAPI(title="Blog FastAPI GraphQL")
 
-# …other imports…
+# Context middleware لإضافة db لكل request
 
 
-app = FastAPI(tilte='Blog Fsat Api')
+async def get_context_value(request):
+    db = sessionlocal()
+    try:
+        return {"request": request, "db": db}
+    finally:
+        pass  # session هيتقفل بعد الـ commit في resolver
 
-app.add_route("/graphql", GraphQL(schema, debug=True))
-app.add_websocket_route("/graphql", GraphQL(schema, debug=True))
+app.add_route("/graphql", GraphQL(schema, context_value=get_context_value))
+app.add_websocket_route(
+    "/graphql", GraphQL(schema, context_value=get_context_value))
 
 
 app.state.limiter = limiter
