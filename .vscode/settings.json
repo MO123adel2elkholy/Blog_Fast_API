@@ -11,5 +11,6 @@
   "editor.rulers": [88],
   
   },
+  "python.terminal.useEnvFile": true,
  
 }

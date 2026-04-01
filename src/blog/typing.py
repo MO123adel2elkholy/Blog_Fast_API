@@ -1,6 +1,7 @@
-from ariadne import QueryType, MutationType, make_executable_schema
-from blog.models import User, Blog
+from ariadne import MutationType, QueryType, make_executable_schema
+
 from blog.hashing import Hash
+from blog.models import Blog, User
 
 type_defs = """
 type Query {
@@ -67,6 +68,7 @@ def resolve_blogs(_, info):
 def resolve_blog(_, info, id):
     db = info.context["db"]
     return db.query(Blog).filter(Blog.id == id).first()
+
 
 # --- Mutations ---
 

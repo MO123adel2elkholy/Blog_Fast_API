@@ -3,10 +3,10 @@ from fastapi.exceptions import HTTPException
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
-from blog.Email.email import send_email
 from blog.hashing import Hash
 from blog.models import User
 from blog.schema import UserSchema
+from celery_worker import welcome_email
 
 
 def create_user_new(request: UserSchema, db: Session):
@@ -25,10 +25,16 @@ def create_user_new(request: UserSchema, db: Session):
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
-        send_email(
-            "wlcome Email",
+        # send_email(
+        #     "wlcome Email",
+        #     "adel333mahmoud@gmail.com",
+        #     f"Welcom {new_user} to Our blog  ",
+        # )
+        print("Sendin Email --- ")
+        welcome_email.delay(
+            "Welcome 🎉",
             "adel333mahmoud@gmail.com",
-            f"Welcom {new_user} to Our blog  ",
+            "Welcome to our Blog 🚀",
         )
 
         return {"message": "Acount created Successfuly now you can login "}
