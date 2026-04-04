@@ -32,6 +32,17 @@ celery_app = Celery(
 )
 
 
-@celery_app.task(name="welcome_email")
-def welcome_email(subject: str, to_email: str, body: str):
-    send_email(subject, to_email, body)
+# @celery_app.task(name="welcome_email")
+# def welcome_email(subject: str, to_email: str, body: str):
+#     send_email(subject, to_email, body)
+
+
+@celery_app.task
+def send_verification_email(to_email: str, token: str):
+    link = f"http://localhost:8000/verify-email?token={token}"
+
+    send_email(
+        subject="Verify your email",
+        to_email=to_email,
+        body=f"Click here to verify: {link}",
+    )

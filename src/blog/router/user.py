@@ -33,3 +33,10 @@ def create_user(
 @user_router.get("/{id}", status_code=status.HTTP_200_OK, response_model=ReadUser)
 def get_user(id: int, response: Response, db: Session = Depends(get_db)):
     return users.get_user_exist(id, response, db)
+
+
+@user_router.get(
+    "/verify-email", status_code=status.HTTP_200_OK, response_model=ReadUser
+)
+def verify_email(token: str, response: Response, db: Session = Depends(get_db)):
+    return users.verify_email_rpeo(token, response, db)

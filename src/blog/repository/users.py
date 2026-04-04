@@ -6,7 +6,12 @@ from sqlalchemy.orm import Session
 from blog.hashing import Hash
 from blog.models import User
 from blog.schema import UserSchema
-from celery_worker import welcome_email
+from blog.token import create_vervication_token, verify_vemail_verification_token
+
+# from celery_worker import welcome_email
+from celery_worker import send_verification_email
+
+# from blog.tasks.sending_welcome_email import welcome_email
 
 
 def create_user_new(request: UserSchema, db: Session):
@@ -25,17 +30,21 @@ def create_user_new(request: UserSchema, db: Session):
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
+
         # send_email(
         #     "wlcome Email",
         #     "adel333mahmoud@gmail.com",
         #     f"Welcom {new_user} to Our blog  ",
         # )
         print("Sendin Email --- ")
-        welcome_email.delay(
-            "Welcome 🎉",
-            "adel333mahmoud@gmail.com",
-            "Welcome to our Blog 🚀",
-        )
+        token = create_vervication_token(new_user.email)
+        send_verification_email.delay(to_email=new_user.email, token=token)
+
+        # welcome_email.delay(
+        #     "Welcome 🎉",
+        #     "adel333mahmoud@gmail.com",
+        #     f"Welcom {new_user.name} to Our blog 🚀",
+        # )
 
         return {"message": "Acount created Successfuly now you can login "}
 
@@ -48,3 +57,19 @@ def get_user_exist(id: int, response: Response, db: Session):
         )
 
     return user
+
+
+def verify_email_rpeo(token: str, response: Response, db: Session):
+    data = verify_vemail_verification_token(token=token)
+    user = db.query(User).filter(User.email == data["sub"]).first()
+    if not user:
+        raise HTTPException(
+            detail=f"no user with this id {user.email} ",
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
+    user.is_vervied = True
+    db.commit()
+    return {
+        "message": "Email Vervied succesfuly Now you can Ena",
+        "status_code": status.HTTP_100_CONTINUE,
+    }
