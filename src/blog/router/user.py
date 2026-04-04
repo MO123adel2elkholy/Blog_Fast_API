@@ -5,7 +5,13 @@ from sqlalchemy.orm import Session
 
 from blog.database import get_db
 from blog.repository import users
-from blog.schema import ForgotPasswordRequest, ReadUser, RestPasswordRequest, UserSchema
+from blog.schema import (
+    ForgotPasswordRequest,
+    ReadUser,
+    RestPasswordRequest,
+    UserSchema,
+    VerviyMessageModel,
+)
 
 user_router = APIRouter(
     tags=["user"],
@@ -36,7 +42,9 @@ def get_user(id: int, response: Response, db: Session = Depends(get_db)):
 
 
 @user_router.get(
-    "/verify-email", status_code=status.HTTP_200_OK, response_model=ReadUser
+    "/vervif/verify-email",
+    status_code=status.HTTP_200_OK,
+    response_model=VerviyMessageModel,
 )
 def verify_email(token: str, response: Response, db: Session = Depends(get_db)):
     return users.verify_email_rpeo(token, response, db)
@@ -50,6 +58,12 @@ def forgot_password(
 
 
 @user_router.post("/rest/reset-password")
+def reset_password(
+    token: str, new_password: RestPasswordRequest, db: Session = Depends(get_db)
+):
+    return users.reset_password(token, new_password.password, db)
+
+
 def reset_password(
     token: str, new_password: RestPasswordRequest, db: Session = Depends(get_db)
 ):

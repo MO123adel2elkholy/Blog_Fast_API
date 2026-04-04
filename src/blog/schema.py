@@ -89,3 +89,8 @@ class ForgotPasswordRequest(BaseModel):
 
 class RestPasswordRequest(BaseModel):
     password: str
+
+
+class VerviyMessageModel(BaseModel):
+    message: str
+    status_code: int

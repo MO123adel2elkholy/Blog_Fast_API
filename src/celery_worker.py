@@ -39,7 +39,7 @@ celery_app = Celery(
 
 @celery_app.task
 def send_verification_email(to_email: str, token: str):
-    link = f"http://localhost:8000/verify-email?token={token}"
+    link = f"http://localhost:8000/user/vervif/verify-email?token={token}"
 
     send_email(
         subject="Verify your email",
@@ -50,6 +50,6 @@ def send_verification_email(to_email: str, token: str):
 
 @celery_app.task
 def send_reset_email(to_email: str, token: str):
-    link = f"http://localhost:8002/user/rest/reset-password?token={token}"
+    link = f"http://localhost:8000/user/rest/reset-password?token={token}"
 
     send_email(subject="Reset Password", to_email=to_email, body=f"Reset here: {link}")

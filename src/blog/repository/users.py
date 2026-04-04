@@ -60,18 +60,24 @@ def get_user_exist(id: int, response: Response, db: Session):
 
 
 def verify_email_rpeo(token: str, response: Response, db: Session):
-    data = verify_vemail_verification_token(token=token)
+    try:
+        data = verify_vemail_verification_token(token)
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired token"
+        )
     user = db.query(User).filter(User.email == data["sub"]).first()
+
     if not user:
         raise HTTPException(
-            detail=f"no user with this id {user.email} ",
+            detail=f"no user with this Email {user.email} ",
             status_code=status.HTTP_404_NOT_FOUND,
         )
     user.is_vervied = True
     db.commit()
     return {
-        "message": "Email Vervied succesfuly Now you can Ena",
-        "status_code": status.HTTP_100_CONTINUE,
+        "message": "Email Vervied succesfuly Now you can Enjoying our website ",
+        "status_code": status.HTTP_200_OK,
     }
 
 
@@ -89,11 +95,31 @@ def forgot_password(email: str, db: Session):
 
 
 def reset_password(token: str, new_password: str, db: Session):
-    data = verify_vemail_verification_token(token)
 
+    try:
+        data = verify_vemail_verification_token(token)
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired token"
+        )
+
+    # 2️⃣ تحقق من وجود المستخدم
     user = db.query(User).filter(User.email == data["sub"]).first()
 
-    user.password = Hash.bcrypt(new_password)
-    db.commit()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
 
+    # 3️⃣ validation للباسورد
+    if len(new_password) < 6:
+        raise HTTPException(
+            status_code=400, detail="Password must be at least 6 characters"
+        )
+
+    # 4️⃣ تحديث الباسورد
+    user.password = Hash.bcrypt(new_password)
+
+    # 🔐 (اختياري مهم) invalidate token
+    # لو عندك column زي reset_token تمسحه هنا
+
+    db.commit()
     return {"message": "Password updated"}
