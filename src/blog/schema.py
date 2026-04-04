@@ -1,5 +1,8 @@
 # from typing import Optional
-# from pydantic import BaseModel, EmailStr
+from typing import List, Optional
+
+from pydantic import BaseModel, EmailStr
+
 # from typing import List
 
 
@@ -30,10 +33,6 @@
 #         from_attributes = True
 
 
-from typing import Optional, List
-from pydantic import BaseModel, EmailStr
-
-
 #  Blog and User Schema
 class BlogSChema(BaseModel):
     title: str
@@ -42,7 +41,7 @@ class BlogSChema(BaseModel):
     user_id: int
 
     class Config:
-        orm_mode = True            # ← enable ORM mode
+        orm_mode = True  # ← enable ORM mode
 
 
 class UserSchema(BaseModel):
@@ -57,16 +56,16 @@ class ReadUser(BaseModel):
     blogs: List[BlogSChema]
 
     class Config:
-        orm_mode = True            # ← enable ORM mode
+        orm_mode = True  # ← enable ORM mode
 
 
 class ReadBlogSChema(BaseModel):
     title: str
     body: str
-    creator: Optional[ReadUser]   # allow None if there is no creator
+    creator: Optional[ReadUser]  # allow None if there is no creator
 
     class Config:
-        orm_mode = True            # ← was `from_attributes` before, which is wrong
+        orm_mode = True  # ← was `from_attributes` before, which is wrong
 
 
 #  Authentication Schema
@@ -82,3 +81,11 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     name: Optional[str] = None
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class RestPasswordRequest(BaseModel):
+    password: str

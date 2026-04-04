@@ -46,3 +46,10 @@ def send_verification_email(to_email: str, token: str):
         to_email=to_email,
         body=f"Click here to verify: {link}",
     )
+
+
+@celery_app.task
+def send_reset_email(to_email: str, token: str):
+    link = f"http://localhost:8002/user/rest/reset-password?token={token}"
+
+    send_email(subject="Reset Password", to_email=to_email, body=f"Reset here: {link}")

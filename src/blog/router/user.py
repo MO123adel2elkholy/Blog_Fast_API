@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from blog.database import get_db
 from blog.repository import users
-from blog.schema import ReadUser, UserSchema
+from blog.schema import ForgotPasswordRequest, ReadUser, RestPasswordRequest, UserSchema
 
 user_router = APIRouter(
     tags=["user"],
@@ -40,3 +40,17 @@ def get_user(id: int, response: Response, db: Session = Depends(get_db)):
 )
 def verify_email(token: str, response: Response, db: Session = Depends(get_db)):
     return users.verify_email_rpeo(token, response, db)
+
+
+@user_router.post("/forgot-password")
+def forgot_password(
+    request: Request, request1: ForgotPasswordRequest, db: Session = Depends(get_db)
+):
+    return users.forgot_password(request1.email, db)
+
+
+@user_router.post("/rest/reset-password")
+def reset_password(
+    token: str, new_password: RestPasswordRequest, db: Session = Depends(get_db)
+):
+    return users.reset_password(token, new_password.password, db)

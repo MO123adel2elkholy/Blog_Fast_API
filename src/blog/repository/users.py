@@ -9,7 +9,7 @@ from blog.schema import UserSchema
 from blog.token import create_vervication_token, verify_vemail_verification_token
 
 # from celery_worker import welcome_email
-from celery_worker import send_verification_email
+from celery_worker import send_reset_email, send_verification_email
 
 # from blog.tasks.sending_welcome_email import welcome_email
 
@@ -73,3 +73,27 @@ def verify_email_rpeo(token: str, response: Response, db: Session):
         "message": "Email Vervied succesfuly Now you can Ena",
         "status_code": status.HTTP_100_CONTINUE,
     }
+
+
+def forgot_password(email: str, db: Session):
+    user = db.query(User).filter(User.email == email).first()
+
+    if not user:
+        raise HTTPException(404, "User not found")
+
+    token = create_vervication_token(email)
+
+    send_reset_email.delay(email, token)
+
+    return {"message": "Reset link sent"}
+
+
+def reset_password(token: str, new_password: str, db: Session):
+    data = verify_vemail_verification_token(token)
+
+    user = db.query(User).filter(User.email == data["sub"]).first()
+
+    user.password = Hash.bcrypt(new_password)
+    db.commit()
+
+    return {"message": "Password updated"}
