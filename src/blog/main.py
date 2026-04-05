@@ -1,3 +1,5 @@
+import os
+
 from ariadne.asgi import GraphQL
 from dotenv import load_dotenv
 from fastapi import FastAPI
@@ -31,7 +33,6 @@ async def get_context_value(request):
 app.add_route("/graphql", GraphQL(schema, context_value=get_context_value))
 app.add_websocket_route("/graphql", GraphQL(schema, context_value=get_context_value))
 
-import os
 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -41,6 +42,11 @@ app.add_middleware(SessionMiddleware, SECRET_KEY)
 
 setup_admin(app)
 
+
+# المسارات اللي مش عايزين نتحقق فيها من blacklist
+exempt_routes = ["/login", "/user", "/user/forgot-password", "/user/reset-password"]
+
+# app.add_middleware(CustomJWTMiddleware, exempt_paths=exempt_routes)
 
 app.include_router(blog.router)
 app.include_router(user.user_router)

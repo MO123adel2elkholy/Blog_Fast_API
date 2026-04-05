@@ -40,5 +40,5 @@
 5 upgrade head if somthing wrong get had happend ``` alembic -c blog/alembic.ini stamp head ```
 
 
-# integrating Sqladmi 
+# integrating Sqladmin
 * sqladmin is used for creating nice admin  pannel with beautiful UI  for Your models 

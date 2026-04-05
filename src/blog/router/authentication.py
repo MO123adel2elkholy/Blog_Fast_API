@@ -7,7 +7,7 @@ from blog.database import get_db
 from blog.hashing import Hash
 from blog.models import User
 from blog.token import create_access_token
-from blog.utils import add_token_to_blacklist
+from blog.utils.jwt_blacklist import add_token_to_blacklist
 
 auth_router = APIRouter(
     tags=["auth"],
