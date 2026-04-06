@@ -8,11 +8,8 @@ from fastapi.security import OAuth2PasswordBearer
 from blog import token
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
-load_dotenv("")
+load_dotenv()
 
-
-GITHUB_CLIENT_SECRET'=your_github_client_secret'
-JWT_SECRET='77f9d50fb85c7c2d84f79c08b2f93d758a43fa36'
 
 def get_current_user(data: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
@@ -25,8 +22,12 @@ def get_current_user(data: str = Depends(oauth2_scheme)):
 
 
 #  Handling Social authentication
+
+#  Handling Social authentication
 # إعداد الـ OAuth
 oauth = OAuth()
+GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID")
+GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET")
 # Google provider
 oauth.register(
     name="google",
@@ -38,8 +39,8 @@ oauth.register(
 # GitHub provider
 oauth.register(
     name="github",
-    client_id=os.getenv("GITHUB_CLIENT_ID"),
-    client_secret=os.getenv("GITHUB_CLIENT_SECRET"),
+    client_id=GITHUB_CLIENT_ID,
+    client_secret=GITHUB_CLIENT_SECRET,
     access_token_url="https://github.com/login/oauth/access_token",
     authorize_url="https://github.com/login/oauth/authorize",
     api_base_url="https://api.github.com/",
