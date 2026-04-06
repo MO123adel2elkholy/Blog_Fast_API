@@ -42,3 +42,6 @@
 
 # integrating Sqladmin
 * sqladmin is used for creating nice admin  pannel with beautiful UI  for Your models 
+
+# integrating authlib
+* auth lip is python third party packge enaples us to authenticated using social apps providers such as google faccbook github etc  .....
