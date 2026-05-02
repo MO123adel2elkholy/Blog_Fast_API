@@ -4,36 +4,89 @@ from fastapi import status
 from fastapi.exceptions import HTTPException
 from fastapi.responses import Response
 from fastapi_cache import FastAPICache
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from blog.models import Blog
 from blog.schema import BlogSChema
 
-# @app.get("/products")
-# def get_products(
-#     page: int = 1,
-#     size: int = 10,
-#     db: Session = Depends(get_db)
+ALLOWED_SORT_FIELDS = {"id", "title", "created_at"}
+
+
+# @router.get("/blog", response_model=PaginatedBlog)
+# def get_blogs(
+#     page: int = Query(1, ge=1),
+#     size: int = Query(10, ge=1, le=100),
+#     search: str | None = None,
+#     sort_by: str = Query("id"),
+#     order: str = Query("desc"),
+#     db: Session = Depends(get_db),
 # ):
+#     query = db.query(Blog)
+
+#     # 🔍 SEARCH
+#     if search:
+#         query = query.filter(
+#             or_(Blog.title.ilike(f"%{search}%"), Blog.content.ilike(f"%{search}%"))
+#         )
+
+#     # 🔒 SAFE SORTING
+#     if sort_by not in ALLOWED_SORT_FIELDS:
+#         sort_by = "id"
+
+#     column = getattr(Blog, sort_by)
+
+#     if order == "desc":
+#         query = query.order_by(column.desc())
+#     else:
+#         query = query.order_by(column.asc())
+
+#     # 📊 TOTAL (قبل pagination)
+#     total = query.count()
+
+#     # 📄 PAGINATION
 #     skip = (page - 1) * size
+#     blogs = query.offset(skip).limit(size).all()
 
-#     total = db.query(Product).count()
-#     products = db.query(Product).offset(skip).limit(size).all()
-
-#     return {
-#         "page": page,
-#         "size": size,
-#         "total": total,
-#         "data": products
-#     }
+#     return {"page": page, "size": size, "total": total, "data": blogs}
 
 
-def get_all_blogs(db: Session, page: int, size: int):
+def get_all_blogs(
+    db: Session, page: int, size: int, search: str, sort_by: str, order: str
+):
+    query = db.query(Blog)
+
+    # 🔍 SEARCH
+    if search:
+        query = query.filter(
+            or_(Blog.title.ilike(f"%{search}%"), Blog.body.ilike(f"%{search}%"))
+        )
+
+    # 🔒 SAFE SORTING
+    if sort_by not in ALLOWED_SORT_FIELDS:
+        sort_by = "id"
+
+    column = getattr(Blog, sort_by)
+
+    if order == "desc":
+        query = query.order_by(column.desc())
+    else:
+        query = query.order_by(column.asc())
+
+    # 📊 TOTAL (قبل pagination)
+    total = query.count()
+
+    # 📄 PAGINATION
     skip = (page - 1) * size
-    total = db.query(Blog).count()
-    blogs = db.query(Blog).offset(skip).limit(size).all()
+    blogs = query.offset(skip).limit(size).all()
 
     return {"page": page, "size": size, "total": total, "data": blogs}
+
+    # skip = (page - 1) * size
+    # total = db.query(Blog).count()
+    # blogs = db.query(Blog).offset(skip).limit(size).all()
+
+    # return {"page": page, "size": size, "total": total, "data": blogs}
 
 
 def create_blog(request: BlogSChema, db: Session):

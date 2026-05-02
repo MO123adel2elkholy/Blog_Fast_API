@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Query, status
 from fastapi.requests import Request
 from fastapi.responses import Response
 from fastapi_cache import FastAPICache
@@ -37,11 +37,14 @@ async def create(
 def all(
     db: Session = Depends(get_db),
     get_current_user_auth: UserSchema = Depends(get_current_user),
-    page: int = 1,
-    size: int = 10,
+    page: int = Query(1, ge=1),
+    size: int = Query(10, ge=1, le=100),
+    search: str = "",
+    sort_by: str = Query("id"),
+    order: str = Query("desc"),
 ):
     print("Database HIt ")
-    return blogs.get_all_blogs(db, page, size)
+    return blogs.get_all_blogs(db, page, size, search, sort_by, order)
 
 
 # return blog with id
