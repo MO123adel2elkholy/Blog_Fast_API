@@ -82,12 +82,6 @@ def get_all_blogs(
 
     return {"page": page, "size": size, "total": total, "data": blogs}
 
-    # skip = (page - 1) * size
-    # total = db.query(Blog).count()
-    # blogs = db.query(Blog).offset(skip).limit(size).all()
-
-    # return {"page": page, "size": size, "total": total, "data": blogs}
-
 
 def create_blog(request: BlogSChema, db: Session):
     new_blog = Blog(title=request.title, body=request.body, user_id=request.user_id)
