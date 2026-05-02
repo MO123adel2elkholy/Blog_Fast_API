@@ -3,6 +3,9 @@ import os
 from ariadne.asgi import GraphQL
 from dotenv import load_dotenv
 from fastapi import FastAPI
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from redis import asyncio as aioredis
 from starlette.middleware.sessions import SessionMiddleware
 
 from blog.admin.setup import setup_admin
@@ -17,7 +20,15 @@ load_dotenv()
 # إنشاء الجداول لو مش موجودة
 models.Base.metadata.create_all(engine)
 
+
 app = FastAPI(title="Blog FastAPI GraphQL")
+
+
+@app.on_event("startup")
+async def startup():
+    redis = aioredis.from_url("redis://localhost")
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+
 
 # Context middleware لإضافة db لكل request
 

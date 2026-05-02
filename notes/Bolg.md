@@ -45,3 +45,11 @@
 
 # integrating authlib
 * auth lip is python third party packge enaples us to authenticated using social apps providers such as google faccbook github etc  .....
+
+
+# fastapi-cache2 
+* fastapi cache2 is used for caching data in fastapi apps for better performance and reducing database load
+1- using in memory cache
+2- using redis cache
+# integrating fastapi security
+* fastapi security is used for handling authentication and authorization in fastapi apps

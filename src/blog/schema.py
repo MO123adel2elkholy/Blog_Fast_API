@@ -62,7 +62,6 @@ class ReadUser(BaseModel):
 class ReadBlogSChema(BaseModel):
     title: str
     body: str
-    creator: Optional[ReadUser]  # allow None if there is no creator
 
     class Config:
         orm_mode = True  # ← was `from_attributes` before, which is wrong
