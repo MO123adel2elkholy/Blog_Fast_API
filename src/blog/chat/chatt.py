@@ -31,7 +31,7 @@ manager = ConnectionManager()
 
 @Chatting_router.get("/")
 async def get():
-    htmlpath = "static/html/index.html"
+    htmlpath = "html/index.html"
     return FileResponse(path=htmlpath, status_code=200)
 
 

@@ -3,6 +3,7 @@ import os
 from ariadne.asgi import GraphQL
 from dotenv import load_dotenv
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
@@ -25,6 +26,8 @@ models.Base.metadata.create_all(engine)
 
 
 app = FastAPI(title="Blog FastAPI GraphQL")
+
+app.mount("/media", StaticFiles(directory="media"), name="media")
 
 
 @app.on_event("startup")
@@ -66,44 +69,3 @@ app.include_router(blog.router)
 app.include_router(user.user_router)
 app.include_router(authentication.auth_router)
 app.include_router(Chatting_router)
-
-
-# class ConnectionManager:
-#     def __init__(self):
-#         self.active_connections: list[WebSocket] = []
-
-#     async def connect(self, websocket: WebSocket):
-#         await websocket.accept()
-#         self.active_connections.append(websocket)
-
-#     def disconnect(self, websocket: WebSocket):
-#         self.active_connections.remove(websocket)
-
-#     async def send_personal_message(self, message: str, websocket: WebSocket):
-#         await websocket.send_text(message)
-
-#     async def broadcast(self, message: str):
-#         for connection in self.active_connections:
-#             await connection.send_text(message)
-
-
-# manager = ConnectionManager()
-
-
-# @app.get("/")
-# async def get():
-#     htmlpath = "static/html/index.html"
-#     return FileResponse(path=htmlpath, status_code=200)
-
-
-# @app.websocket("/ws/{client_id}")
-# async def websocket_endpoint(websocket: WebSocket, client_id: int):
-#     await manager.connect(websocket)
-#     try:
-#         while True:
-#             data = await websocket.receive_text()
-#             await manager.send_personal_message(f"You wrote: {data}", websocket)
-#             await manager.broadcast(f"Client #{client_id} says: {data}")
-#     except WebSocketDisconnect:
-#         manager.disconnect(websocket)
-#         await manager.broadcast(f"Client #{client_id} left the chat")
