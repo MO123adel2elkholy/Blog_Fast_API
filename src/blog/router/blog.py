@@ -1,5 +1,3 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, status
 from fastapi.requests import Request
 from fastapi.responses import Response
@@ -11,7 +9,7 @@ from blog.database import get_db
 from blog.limiter import limiter
 from blog.oauth2 import get_current_user
 from blog.repository import blogs
-from blog.schema import BlogSChema, ReadBlogSChema, UserSchema
+from blog.schema import BlogSChema, PaginatedBlog, ReadBlogSChema, UserSchema
 
 router = APIRouter(
     tags=["blogs"],
@@ -34,14 +32,16 @@ async def create(
 
 
 # return all blogs
-@router.get("/", status_code=status.HTTP_200_OK, response_model=List[ReadBlogSChema])
+@router.get("/", status_code=status.HTTP_200_OK, response_model=PaginatedBlog)
 @cache(expire=120, namespace="blogs")  # cache لمدة 60 ثانية
 def all(
     db: Session = Depends(get_db),
     get_current_user_auth: UserSchema = Depends(get_current_user),
+    page: int = 1,
+    size: int = 10,
 ):
     print("Database HIt ")
-    return blogs.get_all_blogs(db)
+    return blogs.get_all_blogs(db, page, size)
 
 
 # return blog with id

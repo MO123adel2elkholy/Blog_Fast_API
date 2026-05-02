@@ -9,9 +9,31 @@ from sqlalchemy.orm import Session
 from blog.models import Blog
 from blog.schema import BlogSChema
 
+# @app.get("/products")
+# def get_products(
+#     page: int = 1,
+#     size: int = 10,
+#     db: Session = Depends(get_db)
+# ):
+#     skip = (page - 1) * size
 
-def get_all_blogs(db: Session):
-    return db.query(Blog).all()
+#     total = db.query(Product).count()
+#     products = db.query(Product).offset(skip).limit(size).all()
+
+#     return {
+#         "page": page,
+#         "size": size,
+#         "total": total,
+#         "data": products
+#     }
+
+
+def get_all_blogs(db: Session, page: int, size: int):
+    skip = (page - 1) * size
+    total = db.query(Blog).count()
+    blogs = db.query(Blog).offset(skip).limit(size).all()
+
+    return {"page": page, "size": size, "total": total, "data": blogs}
 
 
 def create_blog(request: BlogSChema, db: Session):

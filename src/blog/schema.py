@@ -93,3 +93,18 @@ class RestPasswordRequest(BaseModel):
 class VerviyMessageModel(BaseModel):
     message: str
     status_code: int
+
+
+class BlogOut(BaseModel):
+    id: int
+    title: str
+
+    class Config:
+        from_attributes = True
+
+
+class PaginatedBlog(BaseModel):
+    page: int
+    size: int
+    total: int
+    data: List[BlogOut]
