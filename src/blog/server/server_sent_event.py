@@ -3,6 +3,7 @@ import json
 
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
+from starlette.responses import FileResponse
 
 clients = []
 
@@ -34,35 +35,7 @@ async def send_event(message: dict):
         await client.put(message)
 
 
-from fastapi.responses import HTMLResponse
-
-
-@server_sent_event_router.get("/response", response_class=HTMLResponse)
+@server_sent_event_router.get("/response", response_class=FileResponse)
 def home():
-    return """
-<!DOCTYPE html>
-<html>
-<head>
-    <title>SSE Demo</title>
-</head>
-<body>
-
-<h2>Live Notifications</h2>
-<ul id="list"></ul>
-
-<script>
-const eventSource = new EventSource("http://127.0.0.1:8000/server/stream");
-
-eventSource.onmessage = function(event) {
-    const data = JSON.parse(event.data);
-
-    const li = document.createElement("li");
-    li.innerText = data.type + " - " + JSON.stringify(data.data);
-
-    document.getElementById("list").appendChild(li);
-};
-</script>
-
-</body>
-</html>
-"""
+    htmlpath = "static/html/sse.html"
+    return FileResponse(path=htmlpath, status_code=200)

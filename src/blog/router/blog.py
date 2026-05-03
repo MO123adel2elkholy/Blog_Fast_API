@@ -28,7 +28,7 @@ async def create(
 ):
     create_blog = blogs.create_blog(blog, db)
     await FastAPICache.clear("blogs")
-    await send_event({"type": "NEW_BLOG", "data": "New blog data added to "})
+    await send_event({"type": "blog", "data": blog.title})
 
     return create_blog
 
