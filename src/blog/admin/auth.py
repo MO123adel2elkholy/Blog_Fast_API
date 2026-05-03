@@ -1,28 +1,31 @@
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
+
 from blog.database import sessionlocal
-from blog.models import User
 from blog.hashing import Hash
+from blog.models import User
+
+hasing = Hash()
 
 
 class AdminAuth(AuthenticationBackend):
-
     async def login(self, request: Request) -> bool:
         form = await request.form()
-        email = form.get("username")
+        name = form.get("username")
         password = form.get("password")
 
         db = sessionlocal()
-        user = db.query(User).filter(User.email == email).first()
+        user = db.query(User).filter(User.name == name).first()
         db.close()
-
+        print("user ", user.name)
         if not user:
+            print("No user with this cridintials ")
             return False
 
-        # if not Hash.verify(password, user.password):
-        #     return False
-
+        if not Hash.verify(user.password, password):
+            return False
         request.session.update({"user": user.email})
+        print("LOggd in User to system ")
         return True
 
     async def logout(self, request: Request) -> bool:
