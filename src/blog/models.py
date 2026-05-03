@@ -15,7 +15,7 @@ class Blog(Base):
     published = Column(Boolean, default=False)
     user_id = Column(Integer, ForeignKey("users.id"))
     creator = relationship("User", back_populates="blogs")
-    # image_url = Column(String, nullable=True)
+    image_url = Column(String, nullable=True)
 
 
 class User(Base):
@@ -27,7 +27,8 @@ class User(Base):
     password = Column(String)
     blogs = relationship("Blog", back_populates="creator")
     is_vervied = Column(Boolean, default=False)
-    # avatar = Column(String, nullable=True)
+    is_admin = Column(Boolean, default=False)
+    avatar = Column(String, nullable=True)
 
 
 class BlacklistedToken(Base):

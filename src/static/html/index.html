@@ -1,4 +1,4 @@
-
+<!-- 
 <!DOCTYPE html>
 <html>
     <head>
@@ -54,4 +54,119 @@
     </body>
 </html>
 
+ -->
 
+
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #0f172a;
+            color: #fff;
+        }
+
+        .chat-container {
+            max-width: 700px;
+            margin: 50px auto;
+        }
+
+        .chat-box {
+            height: 400px;
+            overflow-y: auto;
+            background: #1e293b;
+            border-radius: 15px;
+            padding: 15px;
+        }
+
+        .message {
+            padding: 8px 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            width: fit-content;
+            max-width: 80%;
+        }
+
+        .incoming {
+            background: #334155;
+        }
+
+        .outgoing {
+            background: #22c55e;
+            margin-left: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="chat-container">
+    <img src="https://picsum.photos/536/354" class="card-img-top" alt="random" style="width:700px; height: 150px;">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-dark text-white d-flex justify-content-between">
+            <span>💬 WebSocket Chat</span>
+            <small>ID: <span id="ws-id"></span></small>
+        </div>
+
+        <div id="chat-box" class="chat-box"></div>
+
+        <div class="card-footer bg-light">
+            <form onsubmit="sendMessage(event)" class="d-flex gap-2">
+                <input type="text" id="messageText" class="form-control" placeholder="Type a message..." required>
+                <button class="btn btn-primary">Send</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const client_id = Date.now();
+    document.getElementById("ws-id").textContent = client_id;
+
+    // ✅ FIX هنا
+    // const ws = new WebSocket(ws://localhost:8000/chatt/ws/${client_id});
+    var ws = new WebSocket(`ws://localhost:8000/chatt/ws/${client_id}`);
+
+    const chatBox = document.getElementById("chat-box");
+
+    ws.onmessage = function(event) {
+        const msg = document.createElement("div");
+        msg.classList.add("message", "incoming");
+        msg.textContent = event.data;
+
+        chatBox.appendChild(msg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    };
+
+    function sendMessage(event) {
+        event.preventDefault();
+
+        const input = document.getElementById("messageText");
+
+        if (!input.value.trim()) return;
+
+        // show message instantly
+        const msg = document.createElement("div");
+        msg.classList.add("message", "outgoing");
+        msg.textContent = input.value;
+
+        chatBox.appendChild(msg);
+
+        ws.send(input.value);
+
+        input.value = '';
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

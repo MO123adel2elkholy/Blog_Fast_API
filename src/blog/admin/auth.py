@@ -24,6 +24,10 @@ class AdminAuth(AuthenticationBackend):
 
         if not Hash.verify(user.password, password):
             return False
+        if not user.is_admin:
+            print("Not admin user  ")
+            return False
+
         request.session.update({"user": user.email})
         print("LOggd in User to system ")
         return True
