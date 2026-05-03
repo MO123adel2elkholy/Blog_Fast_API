@@ -88,6 +88,7 @@ def create_blog(request: BlogSChema, db: Session):
     db.add(new_blog)
     db.commit()
     db.refresh(new_blog)
+
     print(inspect.iscoroutinefunction(FastAPICache.clear))
 
     return new_blog

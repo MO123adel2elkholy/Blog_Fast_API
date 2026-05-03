@@ -10,6 +10,7 @@ from blog.limiter import limiter
 from blog.oauth2 import get_current_user
 from blog.repository import blogs
 from blog.schema import BlogSChema, PaginatedBlog, ReadBlogSChema, UserSchema
+from blog.server.server_sent_event import send_event
 
 router = APIRouter(
     tags=["blogs"],
@@ -18,7 +19,7 @@ router = APIRouter(
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
-@limiter.limit("1/minute")
+@limiter.limit("5/minute")
 async def create(
     request: Request,
     blog: BlogSChema,
@@ -27,6 +28,7 @@ async def create(
 ):
     create_blog = blogs.create_blog(blog, db)
     await FastAPICache.clear("blogs")
+    await send_event({"type": "NEW_BLOG", "data": "New blog data added to "})
 
     return create_blog
 

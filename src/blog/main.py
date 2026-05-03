@@ -14,6 +14,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from blog.admin.setup import setup_admin
 from blog.chat.chatt import Chatting_router
 from blog.database import engine, sessionlocal
+from blog.server.server_sent_event import server_sent_event_router
 from blog.typing import schema
 
 from . import models
@@ -21,11 +22,17 @@ from .limiter import RateLimitExceeded, _rate_limit_exceeded_handler, limiter
 from .router import authentication, blog, user
 
 load_dotenv()
+
+
 # إنشاء الجداول لو مش موجودة
 models.Base.metadata.create_all(engine)
 
 
 app = FastAPI(title="Blog FastAPI GraphQL")
+
+
+#  sere sent evenv configurations
+
 
 app.mount("/media", StaticFiles(directory="media"), name="media")
 
@@ -69,3 +76,4 @@ app.include_router(blog.router)
 app.include_router(user.user_router)
 app.include_router(authentication.auth_router)
 app.include_router(Chatting_router)
+app.include_router(server_sent_event_router)
