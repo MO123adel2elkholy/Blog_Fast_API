@@ -16,6 +16,7 @@ from blog.chat.chatt import Chatting_router
 from blog.database import engine, sessionlocal
 from blog.server.server_sent_event import server_sent_event_router
 from blog.typing import schema
+from blog.utils.middleware import NextMiddleware
 
 from . import models
 from .limiter import RateLimitExceeded, _rate_limit_exceeded_handler, limiter
@@ -63,6 +64,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 app.add_middleware(SessionMiddleware, SECRET_KEY)
+app.add_middleware(NextMiddleware)
 
 setup_admin(app)
 

@@ -110,14 +110,13 @@ eventSource.onopen = function () {
     status.innerText = "🟢 Connected";
 };
 
-// error handling
+// error handling: close the EventSource and redirect once to login page with next
 eventSource.onerror = function () {
-    status.innerText = "🔴 Connection issue (retrying...)";
-    window.location.href = "/admin/login";
+    status.innerText = "🔴 Connection issue (stopping and redirecting)";
+    try { eventSource.close(); } catch (e) {}
+    // redirect to the admin login page and let login redirect back to this HTML page
+    window.location.href = "/admin/login?next=/server/response";
 };
-
-
-
 
 // messages
 eventSource.onmessage = function (event) {
@@ -149,4 +148,4 @@ eventSource.onmessage = function (event) {
 </script>
 
 </body>
-</html> 
+</html>
