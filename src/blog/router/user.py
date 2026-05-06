@@ -62,9 +62,3 @@ def reset_password(
     token: str, new_password: RestPasswordRequest, db: Session = Depends(get_db)
 ):
     return users.reset_password(token, new_password.password, db)
-
-
-def reset_password(
-    token: str, new_password: RestPasswordRequest, db: Session = Depends(get_db)
-):
-    return users.reset_password(token, new_password.password, db)

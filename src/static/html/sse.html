@@ -113,7 +113,11 @@ eventSource.onopen = function () {
 // error handling
 eventSource.onerror = function () {
     status.innerText = "🔴 Connection issue (retrying...)";
+    window.location.href = "/admin/login";
 };
+
+
+
 
 // messages
 eventSource.onmessage = function (event) {

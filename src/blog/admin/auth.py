@@ -17,7 +17,7 @@ class AdminAuth(AuthenticationBackend):
         db = sessionlocal()
         user = db.query(User).filter(User.name == name).first()
         db.close()
-        print("user ", user.name)
+        # print("user ", user.username)
         if not user:
             print("No user with this cridintials ")
             return False

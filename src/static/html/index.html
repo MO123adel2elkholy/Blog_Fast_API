@@ -131,7 +131,6 @@
     document.getElementById("ws-id").textContent = client_id;
 
     // ✅ FIX هنا
-    // const ws = new WebSocket(ws://localhost:8000/chatt/ws/${client_id});
     var ws = new WebSocket(`ws://localhost:8000/chatt/ws/${client_id}`);
 
     const chatBox = document.getElementById("chat-box");
